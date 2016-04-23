@@ -7,54 +7,79 @@
 ```
 
 ```python
->>> L = 10
->>> nx = 101
+>>> L = 1
+>>> nx = 2000
+>>> nt = 400
 >>> psi = np.zeros(nx)
 >>> h_bar = 1
 >>> mass= 1/2
->>> a = L/(nx-1) # space step
->>> h = 1 # time step
+>>> a = L/(nx - 1) # space step
+>>> h = 1e-5 # time step
 >>> x = np.linspace(0, L, nx)
 ...
 >>> # Potential Well
-... V0 = 1
->>> Vwidth = 1
->>> V = np.piecewise(x, [x < L/2 - Vwidth/2, x >= L/2 - Vwidth/2, x > L/2 + Vwidth/2], [0, V0, 0])
+... V0 = 10000
+>>> Vwidth = 0.25*L
+>>> Vcenter = 0.5*L
+>>> V = np.piecewise(x, [x < Vcenter - Vwidth/2, x >= Vcenter - Vwidth/2, x > Vcenter + Vwidth/2], [0, V0, 0])
+>>> V = np.zeros(nx)
 ...
 >>> # Initial wave packet
-... E = 1
->>> sigma0 = L/10
->>> p = 0
->>> psi = np.exp(-(x - L/4)**2/(2*sigma0**2)) * np.exp(1j*p*x)
->>> psi /= np.linalg.norm(psi)
-...
+... psi = np.zeros((nx, nt), dtype='cfloat')
+>>> E = 1
+>>> sigma0 = L/50
+>>> k = 50
+>>> psi[:, 0] = np.exp(-(x - L/8)**2/(2*sigma0**2)) * np.exp(1j*k*x)
+>>> psi[:, 0] /= np.linalg.norm(psi[:, 0])
+```
+
+```python
+>>> print(psi.shape)
+>>> (hv.Curve(np.absolute(psi[:, 0]), label='Wave function') *
+>>>  hv.Curve(V, label='Potential'))
+(2000, 400)
+:Overlay
+   .Curve.Wave_function :Curve   [x]   (y)
+   .Curve.Potential     :Curve   [x]   (y)
+```
+
+```python
 >>> # Crank Nicolson
-... a = - 1j*h/(4*a**2)
->>> b = 0.5 + (1j*h)/(2*a**2) + (1j*h*V)/(4)
->>> H = sp.sparse.diags([a, b, a], [-1, 0, 1], shape=(nx, nx))
->>> A = np.linalg.inv()
->>> A.dot(B)
-```
-
-```python
->>> print(A)
-[[ 0.5 -8.00000000e-04j  0.0 -2.50000000e+01j  0.0 +0.00000000e+00j ...,
-   0.0 +0.00000000e+00j  0.0 +0.00000000e+00j  0.0 +0.00000000e+00j]
- [ 0.0 -2.50000000e+01j  0.5 -8.00000000e-04j  0.0 -2.50000000e+01j ...,
-   0.0 +0.00000000e+00j  0.0 +0.00000000e+00j  0.0 +0.00000000e+00j]
- [ 0.0 +0.00000000e+00j  0.0 -2.50000000e+01j  0.5 -8.00000000e-04j ...,
-   0.0 +0.00000000e+00j  0.0 +0.00000000e+00j  0.0 +0.00000000e+00j]
+... b = h_bar*h/(4*mass*a**2)
+>>> H = sp.sparse.diags([-b, h*V/(2*np.pi) + 2*b, -b], [-1, 0, 1], shape=(nx, nx), dtype='cfloat').todense()
+>>> print(np.isfinite(H))
+>>> A = sp.linalg.inv(np.eye(nx) + 1j*H)
+>>> B = np.eye(nx) - 1j*H
+>>> C = np.dot(B, A)
+[[ True  True  True ...,  True  True  True]
+ [ True  True  True ...,  True  True  True]
+ [ True  True  True ...,  True  True  True]
  ..., 
- [ 0.0 +0.00000000e+00j  0.0 +0.00000000e+00j  0.0 +0.00000000e+00j ...,
-   0.5 -8.00000000e-04j  0.0 -2.50000000e+01j  0.0 +0.00000000e+00j]
- [ 0.0 +0.00000000e+00j  0.0 +0.00000000e+00j  0.0 +0.00000000e+00j ...,
-   0.0 -2.50000000e+01j  0.5 -8.00000000e-04j  0.0 -2.50000000e+01j]
- [ 0.0 +0.00000000e+00j  0.0 +0.00000000e+00j  0.0 +0.00000000e+00j ...,
-   0.0 +0.00000000e+00j  0.0 -2.50000000e+01j  0.5 -8.00000000e-04j]]
+ [ True  True  True ...,  True  True  True]
+ [ True  True  True ...,  True  True  True]
+ [ True  True  True ...,  True  True  True]]
+```
+
+```python
+>>> for i in range(nt-1):
+...     psi[:, i+1] = np.dot(C, psi[:, i])
+```
+
+```python
+>>> print(psi.max())
 ```
 
 ```python
 
+```
+
+```python
+>>> %output holomap='scrubber'
+>>> %output max_frames=100000
+>>> hv.HoloMap([(
+...             i*h, hv.Curve(np.real(psi[:, i])**2)) # * hv.Curve(V))
+...             for i in range(nt)], kdims = ["Time"])
+>>> #hv.HoloMap(np.absolute(psi), kdims=['Time'], label='Wave function')
 ```
 
 ```python
