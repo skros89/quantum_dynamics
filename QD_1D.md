@@ -67,6 +67,7 @@
 
 ```python
 >>> print(psi.max())
+(0.118744545242-0.000599218280593j)
 ```
 
 ```python
@@ -80,6 +81,7 @@
 ...             i*h, hv.Curve(np.real(psi[:, i])**2)) # * hv.Curve(V))
 ...             for i in range(nt)], kdims = ["Time"])
 >>> #hv.HoloMap(np.absolute(psi), kdims=['Time'], label='Wave function')
+b':HoloMap   [Time]\n   :Curve   [x]   (y)'
 ```
 
 ```python
