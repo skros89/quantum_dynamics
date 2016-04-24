@@ -9,7 +9,7 @@
 ```python
 >>> L = 12.5
 >>> nx = 2801
->>> nt = 4000
+>>> nt = 3000
 >>> h_bar = 1
 >>> mass= 1/2
 >>> a = L/(nx - 1) # space step
@@ -31,10 +31,9 @@
 >>> sigma0 = 0.1
 >>> psi[:, 0] = np.exp(-(x - L/2)**2/(2*sigma0**2)) * np.exp(1j*k0*x)
 >>> psi[:, 0] /= np.linalg.norm(psi[:, 0])
-...
->>> (hv.Curve(np.absolute(psi[:, 0]), label='Wave function') *
->>>  hv.Curve(V, label='Potential'))
-:Overlay
+>>> %opts Curve norm{+axiswise}
+>>> (hv.Curve(np.absolute(psi[:, 0]), label='Wave function') + hv.Curve(V, label='Potential'))
+:Layout
    .Curve.Wave_function :Curve   [x]   (y)
    .Curve.Potential     :Curve   [x]   (y)
 ```
@@ -54,10 +53,7 @@
 ...
 >>> %output holomap='scrubber'
 >>> %output max_frames=100000
->>> hv.HoloMap([(
-...             i*h, hv.Curve(np.abs(psi[:, i])**2)) # * hv.Curve(V))
-...             for i in range(nt)], kdims = ["Time"])
->>> #hv.HoloMap(np.absolute(psi), kdims=['Time'], label='Wave function')
+>>> hv.HoloMap([(i*h, hv.Curve(np.abs(psi[:, i])**2))for i in range(nt)], kdims = ["Time"])
 b':HoloMap   [Time]\n   :Curve   [x]   (y)'
 ```
 
@@ -69,13 +65,11 @@ b':HoloMap   [Time]\n   :Curve   [x]   (y)'
 ...     psi_p = np.fft.fft(np.exp(-1j*h*V/h_bar)*psi[:, i])
 ...     psi[:, i+1] = np.fft.ifft(np.exp(-1j*h*k**2/2/mass)*psi_p)
 ...
->>> %output holomap='scrubber'
->>> %output max_frames=100000
->>> hv.HoloMap([(
-...             i*h, hv.Curve(np.abs(psi[:, i])**2)) # * hv.Curve(V))
-...             for i in range(nt)], kdims = ["Time"])
->>> #hv.HoloMap(np.absolute(psi), kdims=['Time'], label='Wave function')
-b':HoloMap   [Time]\n   :Curve   [x]   (y)'
+>>> hv.HoloMap([(i*h, hv.Curve(np.abs(psi[:, i])**2))for i in range(nt)], kdims = ["Time"])
+```
+
+```python
+
 ```
 
 ```python
