@@ -1,3 +1,6 @@
+## 1D Quantum Dynamics
+In this notebook the Time dependent Schrödinger equation is sol
+
 ```python
 >>> import numpy as np
 >>> import scipy as sp
@@ -7,7 +10,7 @@
 ```
 
 ```python
->>> L = 12.5
+>>> L = 12.5 # x-domain from 0 to L
 >>> nx = 2801
 >>> nt = 3000
 >>> h_bar = 1
@@ -57,27 +60,19 @@
 b':HoloMap   [Time]\n   :Curve   [x]   (y)'
 ```
 
-## Trotter-Suzuki
+## Split-operator scheme
 
 ```python
->>> # Trotter Suzuki
-... for i in range(nt-1):
+>>> nt = 10000
+>>> psi = np.zeros((nx, nt), dtype='cfloat')
+>>> sigma0 = 0.1
+>>> psi[:, 0] = np.exp(-(x - L/2)**2/(2*sigma0**2)) * np.exp(1j*k0*x)
+>>> psi[:, 0] /= np.linalg.norm(psi[:, 0])
+>>> for i in range(nt-1):
 ...     psi_p = np.fft.fft(np.exp(-1j*h*V/h_bar)*psi[:, i])
 ...     psi[:, i+1] = np.fft.ifft(np.exp(-1j*h*k**2/2/mass)*psi_p)
 ...
 >>> hv.HoloMap([(i*h, hv.Curve(np.abs(psi[:, i])**2))for i in range(nt)], kdims = ["Time"])
-```
-
-```python
-
-```
-
-```python
-
-```
-
-```python
-
 ```
 
 ```python

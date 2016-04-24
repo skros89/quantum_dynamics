@@ -1,3 +1,5 @@
+## 2D Quantum Dynamics
+
 ```python
 >>> import numpy as np
 >>> import scipy as sp
@@ -7,9 +9,9 @@
 ```
 
 ```python
->>> L = 2
+>>> L = 2 # x domain from 0 to L
 >>> nx = 251
->>> nt = 1000
+>>> nt = 2000
 >>> h_bar = 1
 >>> mass= 1/2
 >>> a = L/(nx - 1) # space step
@@ -18,25 +20,29 @@
 >>> dk = 2*np.pi/L
 >>> k0 = 50
 >>> k = np.linspace(-np.pi/L, np.pi/L, num=nx)
+...
 >>> kx, ky = np.meshgrid(k, k)
 >>> #kx, ky = np.mgrid[-np.pi/L:np.pi/L:dk, -np.pi/L:np.pi/L:dk]
 ... k2 = kx**2 + ky**2
 >>> X, Y = np.mgrid[0:L+a:a, 0:L+a:a]
 ...
 >>> # Potential Well
-... V0 = 1500
->>> Vwidth = 0.01
->>> Vcenter = 0.6*L
->>> V = np.piecewise(x, [x < Vcenter - Vwidth/2, x >= Vcenter - Vwidth/2, x > Vcenter + Vwidth/2], [0, V0, 0])
+... V0 = 4200
 >>> V = np.zeros((nx, nx))
+>>> V[100:105, 0:96] = V0
+>>> V[100:105, 120:132] = V0
+>>> V[100:105, 156:nx] = V0
 ...
 >>> # Initial wave packet
 ... psi = np.zeros((nx, nx, nt), dtype='cfloat')
 >>> sigma0 = 0.1
 >>> psi[:, :, 0] = np.exp(-(X - L/2)**2/(2*sigma0**2)) * np.exp(-(Y - L/2)**2/(2*sigma0**2)) * np.exp(1j*k0*X)
 >>> psi[:, :, 0] /= np.linalg.norm(psi[:, :, 0])
->>> (hv.Image(np.absolute(psi[:, :, 0])**2, label='Wave function'))
-b':Image   [x,y]   (z)'
+>>> %opts Image norm{+axiswise}
+>>> (hv.Image(np.absolute(psi[:, :, 0])**2, label='Wave function') + hv.Image(V, label='Potential'))
+:Layout
+   .Image.Wave_function :Image   [x,y]   (z)
+   .Image.Potential     :Image   [x,y]   (z)
 ```
 
 ## Trotter-Suzuki
