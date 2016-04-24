@@ -10,7 +10,6 @@
 >>> L = 12.5
 >>> nx = 2801
 >>> nt = 4000
->>> psi = np.zeros(nx)
 >>> h_bar = 1
 >>> mass= 1/2
 >>> a = L/(nx - 1) # space step
@@ -22,7 +21,7 @@
 ...
 >>> # Potential Well
 ... V0 = 1500
->>> Vwidth = 0.01
+>>> Vwidth = 0.01*L
 >>> Vcenter = 0.6*L
 >>> V = np.piecewise(x, [x < Vcenter - Vwidth/2, x >= Vcenter - Vwidth/2, x > Vcenter + Vwidth/2], [0, V0, 0])
 >>> #V = np.zeros(nx)
