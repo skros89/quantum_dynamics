@@ -56,6 +56,7 @@
 ... %output holomap='scrubber'
 ... %output max_frames=100000
 ... hv.HoloMap([(i*h, hv.Curve(np.abs(psi[:, i])**2))for i in range(nt)], kdims = ["Time"], label='Probability density of theWave function')
+b':HoloMap   [Time]\n   :Curve   [x]   (y)'
 ```
 
 ## Split-operator scheme
