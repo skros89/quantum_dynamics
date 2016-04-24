@@ -51,24 +51,8 @@
 ```
 
 ```python
->>> %output holomap='scrubber'
->>> %output max_frames=100000
->>> hv.HoloMap([(i*h, hv.Image(np.absolute(psi[:, :, i])**2))for i in range(nt)], kdims = ["Time"])
-b':HoloMap   [Time]\n   :Image   [x,y]   (z)'
-```
-
-```python
-
-```
-
-```python
-
-```
-
-```python
-
-```
-
-```python
-
+>>> %%output filename="2d_double_slit" fig="png" holomap="gif"
+... %output holomap='scrubber'
+... %output max_frames=100000
+... hv.HoloMap([(i*h, hv.Image(np.absolute(psi[:, :, i])**2))for i in range(nt)], kdims = ["Time"], label='Probability density of the Wave function'))
 ```
