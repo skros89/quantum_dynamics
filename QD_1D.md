@@ -1,5 +1,4 @@
 ## 1D Quantum Dynamics
-In this notebook the Time dependent Schrödinger equation is sol
 
 ```python
 >>> import numpy as np
@@ -13,8 +12,6 @@ In this notebook the Time dependent Schrödinger equation is sol
 >>> L = 12.5 # x-domain from 0 to L
 >>> nx = 2801
 >>> nt = 3000
->>> h_bar = 1
->>> mass= 1/2
 >>> a = L/(nx - 1) # space step
 >>> h = 2.5e-5 # time step
 >>> x = np.linspace(0, L, nx)
@@ -45,7 +42,7 @@ In this notebook the Time dependent Schrödinger equation is sol
 
 ```python
 >>> # Crank Nicolson
-... b = h_bar*h/(4*mass*a**2)
+... b = h/(2*a**2)
 >>> H = sp.sparse.diags([-b, h*V/(2*np.pi) + 2*b, -b], [-1, 0, 1], shape=(nx, nx), dtype='cfloat').todense()
 >>> A = sp.linalg.inv(np.eye(nx) + 1j*H)
 >>> B = np.eye(nx) - 1j*H
@@ -69,8 +66,8 @@ b':HoloMap   [Time]\n   :Curve   [x]   (y)'
 >>> psi[:, 0] = np.exp(-(x - L/2)**2/(2*sigma0**2)) * np.exp(1j*k0*x)
 >>> psi[:, 0] /= np.linalg.norm(psi[:, 0])
 >>> for i in range(nt-1):
-...     psi_p = np.fft.fft(np.exp(-1j*h*V/h_bar)*psi[:, i])
-...     psi[:, i+1] = np.fft.ifft(np.exp(-1j*h*k**2/2/mass)*psi_p)
+...     psi_p = np.fft.fft(np.exp(-1j*h*V)*psi[:, i])
+...     psi[:, i+1] = np.fft.ifft(np.exp(-1j*h*k**2)*psi_p)
 ...
 >>> hv.HoloMap([(i*h, hv.Curve(np.abs(psi[:, i])**2))for i in range(nt)], kdims = ["Time"])
 ```
