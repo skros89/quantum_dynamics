@@ -52,10 +52,10 @@
 ```
 
 ```python
->>> %%output filename="1d_crank_nicolson" fig="png" holomap="gif"
+>>> #%%output filename="1d_crank_nicolson" fig="png" holomap="gif"
 ... %output holomap='scrubber'
-... %output max_frames=100000
-... hv.HoloMap([(i*h, hv.Curve(np.abs(psi[:, i])**2))for i in range(nt)], kdims = ["Time"], label='Probability density of theWave function')
+>>> %output max_frames=100000
+>>> hv.HoloMap([(i*h, hv.Curve(np.abs(psi[:, i])**2))for i in range(nt)], kdims = ["Time"], label='Probability density of theWave function')
 b':HoloMap   [Time]\n   :Curve   [x]   (y)'
 ```
 
@@ -72,6 +72,12 @@ b':HoloMap   [Time]\n   :Curve   [x]   (y)'
 ```
 
 ```python
->>> %%output filename="1d_split_operator" fig="png" holomap="gif"
-... hv.HoloMap([(i*h, hv.Curve(np.abs(psi_so[:, i])**2))for i in range(nt)], kdims = ["Time"], label='Probability density of theWave function')
+>>> #%%output filename="1d_split_operator" fig="png" holomap="gif"
+... %output holomap='scrubber'
+>>> %output max_frames=100000
+>>> hv.HoloMap([(i*h, hv.Curve(np.abs(psi_so[:, i])**2))for i in range(nt)], kdims = ["Time"], label='Probability density of theWave function')
+```
+
+```python
+
 ```

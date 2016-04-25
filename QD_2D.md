@@ -25,7 +25,7 @@
 >>> X, Y = np.mgrid[0:L+a:a, 0:L+a:a]
 ...
 >>> # Double slit potential
-... V0 = 4200
+... V0 = 100000
 >>> V = np.zeros((nx, nx))
 >>> V[100:105, 0:96] = V0
 >>> V[100:105, 120:132] = V0
@@ -39,8 +39,8 @@
 >>> %opts Image norm{+axiswise}
 >>> (hv.Image(np.absolute(psi[:, :, 0])**2, label='Probability density of the Wave function') + hv.Image(V, label='Potential'))
 :Layout
-   .Image.Wave_function :Image   [x,y]   (z)
-   .Image.Potential     :Image   [x,y]   (z)
+   .Image.Probability_density_of_the_Wave_function :Image   [x,y]   (z)
+   .Image.Potential                                :Image   [x,y]   (z)
 ```
 
 ```python
@@ -51,8 +51,9 @@
 ```
 
 ```python
->>> %%output filename="2d_double_slit" fig="png" holomap="gif"
+>>> #%%output filename="2d_double_slit2" fig="png" holomap="gif"
 ... %output holomap='scrubber'
-... %output max_frames=100000
-... hv.HoloMap([(i*h, hv.Image(np.absolute(psi[:, :, i])**2))for i in range(nt)], kdims = ["Time"], label='Probability density of the Wave function'))
+>>> %output max_frames=100000
+>>> hv.HoloMap([(i*h, hv.Image(np.absolute(psi[:, :, i])**2))for i in range(nt)], kdims = ["Time"], label='Probability density of the Wave function')
+b':HoloMap   [Time]\n   :Image   [x,y]   (z)'
 ```
